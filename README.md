@@ -5,9 +5,9 @@ tags:
   - image-feature-extraction
   - self-supervised-learning
   - vit
-  - imagenet
-  - dino
-  - ibot
+  - imagenet1k
+  - DiNO
+  - iBOT
   - LeJEPA
 
 datasets:
@@ -31,23 +31,20 @@ A unified collection of Vision Transformer (ViT) models pre-trained exclusively 
 
 ## Model Variants
 
-Models are named by methodology, architecture, and training duration:
+Models are named by methodology, architecture, and pretraining data:
 
-| Model ID               | Method     | Arch | Epochs |
-|------------------------|------------|---|---|
-| `lejepa-vit-s16-ep100` | LeJEPA      | ViT-S/16 | 100 |
-| `lejepa-vit-s16-ep300` | LeJEPA      | ViT-S/16 | 300 |
-| `lejepa-vit-b16-ep100` | LeJEPA      | ViT-B/16 | 100 |
-| `lejepa-vit-b16-ep300` | LeJEPA      | ViT-B/16 | 300 |
-| `dino-vit-s16-ep100`   | DINO<br/> | ViT-S/16 | 100 |
-| `dino-vit-s16-ep300`   | DINO<br/> | ViT-S/16 | 300 |
-| `dino-vit-b16-ep100`   | DINO<br/> | ViT-B/16 | 100 |
-| `dino-vit-b16-ep300`   | DINO<br/> | ViT-B/16 | 300 |
-| `ibot-vit-s16-ep100`   | iBOT<br/> | ViT-S/16 | 100 |
-| `ibot-vit-s16-ep300`   | iBOT<br/> | ViT-S/16 | 300 |
-| `ibot-vit-b16-ep100`   | iBOT<br/> | ViT-B/16 | 100 |
-| `ibot-vit-b16-ep300`   | iBOT<br/> | ViT-B/16 | 300 |
+| Model ID                       | Method    | Arch     | Epochs    |
+|--------------------------------|-----------|----------|-----------|
+| `lejepa-vits16-pretrain-in1k`  | LeJEPA    | ViT-S/16 | 100 / 300 |
+| `lejepa-vitb16-pretrain-in1k`  | LeJEPA    | ViT-B/16 | 100 / 300 |
+| `dino-vits16-pretrain-in1k`    | DINO<br/> | ViT-S/16 | 100 / 300 |
+| `dino-vitb16-pretrain-in1k`    | DINO<br/> | ViT-B/16 | 100 / 300 |
+| `ibot-vits16-pretrain-in1k`    | iBOT<br/> | ViT-S/16 | 100 / 300 |
+| `ibot-vitb16-pretrain-in1k`    | iBOT<br/> | ViT-B/16 | 100 / 300 |
 
+We first test model scale effects, small to large, to detemrine if new methods scale with size.
+Similarly, every model has two checkpoint variants, 100 and 300 epochs to determine how well methods scale with training duration.
+We plan to expand this analysis with also data scale, but currently only supply model checkpoints for in1k pretrained models.
 Intermediate checkpoints saved every 10 epochs are available under `checkpoints/ep{NNN}/` within each model repository. See [`docs/checkpoints.md`](docs/checkpoints.md) for details.
 
 > **No registers.** All models follow the ViT-v2 (DINOv2-style) architecture **without** register tokens.
@@ -63,9 +60,9 @@ All models follow the **ViT-v2** design as used in DINOv2:
 - Patch size 16×16, input resolution 224×224
 
 | Architecture | Params | Layers | Heads | Hidden dim |
-|---|---|---|---|---|
-| ViT-S/16 | 22M | 12 | 6 | 384 |
-| ViT-B/16 | 86M | 12 | 12 | 768 |
+|--------------|--------|--------|-------|------------|
+| ViT-S/16     | 22M    | 12     | 6     | 384        |
+| ViT-B/16     | 86M    | 12     | 12    | 768        |
 
 ---
 
@@ -73,20 +70,20 @@ All models follow the **ViT-v2** design as used in DINOv2:
 
 All models were trained with an identical hardware and software configuration via PyTorch Lightning:
 
-| Setting | Value |
-|---|---|
-| Dataset | ImageNet-1K (1.28M images, 1000 classes) |
-| Precision | BF16 mixed (`bf16-mixed`) |
-| GPUs | 8× (4 devices × 2 nodes, DDP) |
-| Global batch size | 1024 |
-| Per-GPU batch size | 128 |
-| Optimizer | AdamW, layerwise LR decay 0.9 |
-| Base LR | 5e-4 (scaled: `base_lr × batch_size / 256 = 2e-3`) |
-| LR schedule | Linear warmup (10 epochs) → cosine decay to 1e-6 |
-| Gradient clipping | norm, max 3.0 |
-| Training durations | 100 epochs, 300 epochs |
-| Checkpoint cadence | Every 10 epochs |
-| Registers | None |
+| Setting            | Value                                              |
+|--------------------|----------------------------------------------------|
+| Dataset            | ImageNet-1K (1.28M images, 1000 classes)           |
+| Precision          | BF16 mixed (`bf16-mixed`)                          |
+| GPUs               | 8× (4 devices × 2 nodes, DDP)                      |
+| Global batch size  | 1024                                               |
+| Per-GPU batch size | 128                                                |
+| Optimizer          | AdamW, layerwise LR decay 0.9                      |
+| Base LR            | 5e-4 (scaled: `base_lr × batch_size / 256 = 2e-3`) |
+| LR schedule        | Linear warmup (10 epochs) → cosine decay to 1e-6   |
+| Gradient clipping  | norm, max 3.0                                      |
+| Training durations | 100 epochs, 300 epochs                             |
+| Checkpoint cadence | Every 10 epochs                                    |
+| Registers          | None                                               |
 
 Exact configs are in the `configs/` directory. See [`docs/training_infra.md`](docs/training_infra.md) for reproducibility notes.
 
