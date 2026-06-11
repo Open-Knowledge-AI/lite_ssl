@@ -1,0 +1,27 @@
+black
+loguru
+dotenv
+nbautoexport
+numpy==1.26.4
+opencv-python==4.11.0.86
+ml_collections
+wandb
+lightning
+einops
+opt_einsum
+tqdm
+thop
+matplotlib
+seaborn
+pandas
+scipy
+scikit-learn
+huggingface
+transformers
+timm
+segmentation-models-pytorch
+kornia
+-i https://download.pytorch.org/whl/cu128
+torch
+torchvision
+xformers

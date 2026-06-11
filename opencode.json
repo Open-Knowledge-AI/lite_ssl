@@ -1,0 +1,53 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "ut-private-moe/qwen3.6-35b-fp8",
+  "provider": {
+    "ut-private-moe": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "UTwente - vLLM",
+      "options": {
+        "baseURL": "http://145.126.94.214:8808/v1",
+        "apiKey": "distributed-systems-2026"
+      },
+      "models": {
+        "qwen3.6-35b-fp8": {
+          "name": "Qwen 3.6 35B MoE"
+        }
+      }
+    }
+  },
+  "instructions": [
+    "./AGENTS.md"
+  ],
+  "mcp": {
+    "memory": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@iachilles/memento@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "MEMORY_DB_PATH": "/workspace/memory/memento.db"
+      }
+    },
+    "fetch": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "mcp-server-fetch"
+      ],
+      "enabled": true
+    },
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "enabled": true
+    }
+  }
+}

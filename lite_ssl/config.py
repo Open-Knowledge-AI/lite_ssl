@@ -1,0 +1,125 @@
+import json
+import os
+import sys
+
+from pathlib import Path
+
+from loguru import logger
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if it exists
+load_dotenv()
+
+PROJ_ROOT = Path(Path(__file__).resolve().parents[1])
+
+
+def _format_message(record):
+    # process record to generate
+    t = record["time"]
+    level = record["level"]
+
+    name = record["name"]
+    function = record["function"]
+    line = record["line"]
+
+    message = record["message"]
+
+    # escape tags in message, tags are "<some_tag>"
+    if function.startswith("<") and function.endswith(">"):
+        function = rf"\{function}"
+
+    message = message.replace("{", "{{").replace("}", "}}")
+
+    # strip the path to the project root and replace it with a dot for brevity in both file and message
+    message = message.replace(str(PROJ_ROOT), ".")
+
+    final = (
+        f"<green>{t:YYYY-MM-DD HH:mm:ss.SSS!UTC}</green> | "
+        f"<level>{level: <8}</level> | "
+        f"<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    )
+
+    if extra := record["extra"]:
+        extra = json.dumps(extra)
+        extra = extra.replace("{", "{{").replace("}", "}}").replace('"', "")
+        final += f" | <level>{extra}</level>\n"
+    else:
+        final += "\n"
+
+    return final
+
+
+logger.remove(0)
+
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+# If tqdm is installed, configure loguru with tqdm.write
+# https://github.com/Delgan/loguru/issues/135
+try:
+    from tqdm import tqdm
+
+    logger.add(
+        lambda msg: tqdm.write(msg, end=""), format=_format_message, colorize=True, level=LOG_LEVEL
+    )
+except ModuleNotFoundError:
+    logger.add(sys.stderr, format=_format_message, colorize=True, level=LOG_LEVEL)
+
+logger.info(f"LOG_LEVEL is: {LOG_LEVEL}")
+
+# Paths
+logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
+
+# Data directories
+DATA_DIR = os.getenv("DATA_DIR", PROJ_ROOT / "data")
+DATA_DIR = Path(DATA_DIR)
+logger.info(f"DATA_DIR path is: {DATA_DIR}")
+
+SAMPLE_DATA_DIR = os.getenv("SAMPLE_DATA_DIR", DATA_DIR / "sample")
+SAMPLE_DATA_DIR = Path(SAMPLE_DATA_DIR)
+logger.info(f"SAMPLE_DATA_DIR path is: {SAMPLE_DATA_DIR}")
+
+CONFIGS_DIR = os.getenv("CONFIGS_DIR", PROJ_ROOT / "configs")
+CONFIGS_DIR = Path(CONFIGS_DIR)
+logger.info(f"CONFIGS_DIR path is: {CONFIGS_DIR}")
+
+RAW_DATA_DIR = Path(os.getenv("RAW_DATA_DIR", DATA_DIR / "raw"))
+INTERIM_DATA_DIR = Path(os.getenv("INTERIM_DATA_DIR", DATA_DIR / "interim"))
+PROCESSED_DATA_DIR = Path(os.getenv("PROCESSED_DATA_DIR", DATA_DIR / "processed"))
+IN_TRAIN_DIR = Path(os.getenv("IN_TRAIN_DIR", PROCESSED_DATA_DIR))
+IN_VAL_DIR = Path(os.getenv("IN_VAL_DIR", PROCESSED_DATA_DIR))
+
+# Model directories
+MODELS_DIR = Path(os.getenv("MODELS_DIR", PROJ_ROOT / "models"))
+
+# Report directories
+REPORTS_DIR = Path(os.getenv("REPORTS_DIR", PROJ_ROOT / "reports"))
+FIGURES_DIR = REPORTS_DIR / "figures"
+
+LOGS_DIR = Path(os.getenv("LOGS_DIR", PROJ_ROOT / "logs"))
+logger.info(f"LOGS_DIR path is: {LOGS_DIR}")
+
+# ML Logging and Monitoring
+WANDB_ENTITY = os.getenv("WANDB_ENTITY", None)
+if WANDB_ENTITY is None:
+    logger.warning("WANDB_ENTITY is not set. This will log to the default entity.")
+else:
+    logger.info(f"WANDB_ENTITY is: {WANDB_ENTITY}")
+
+WANDB_PROJECT = os.getenv("WANDB_PROJECT", None)
+if WANDB_PROJECT is None:
+    logger.warning(
+        f"WANDB_PROJECT is not set. Defaulting to: {Path(__file__).resolve().parents[1].name}"
+    )
+    WANDB_PROJECT = Path(__file__).resolve().parents[1].name
+else:
+    logger.info(f"WANDB_PROJECT is: {WANDB_PROJECT}")
+
+if os.getenv("WANDB_MODE", "disabled") == "disabled":
+    logger.info("WANDB_MODE is disabled. Disabling WandB logging.")
+    # set WANDB_SILENT to true to disable logging
+    os.environ["WANDB_SILENT"] = "true"
+    logger.info("WandB is made silent.")
+
+SAVE_FAIL_POLICY = os.getenv("SAVE_FAIL_POLICY", "crash")
+
+NUM_WORKERS = int(os.getenv("NUM_WORKERS", 2))

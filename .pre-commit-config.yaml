@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: pretty-format-json
+        args: [ '--autofix' ]
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        language: system
+        entry: make format
+        pass_filenames: false

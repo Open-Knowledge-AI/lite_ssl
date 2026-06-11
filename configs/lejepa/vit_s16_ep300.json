@@ -1,0 +1,82 @@
+{
+  "batch_size": 128,
+  "cva": {},
+  "dataset": {
+    "con": {
+      "enable": true,
+      "do_mask": false,
+      "params": {
+        "scales": [
+          224,
+          96
+        ],
+        "crops_per_scale": [
+          2,
+          6
+        ]
+      },
+      "type": "mst"
+    },
+    "name": "in"
+  },
+  "log_latent": false,
+  "loss": {
+    "id": "lj"
+  },
+  "metrics": {},
+  "model": {
+    "params": {
+      "init_values": null,
+      "drop_path_rate": 0.0,
+      "cva_head_proj": {
+        "bottleneck_dim": 64,
+        "use_last_layer": false
+      },
+      "img_size": 224,
+      "project_latent": true,
+      "project_patch": false
+    },
+    "type": "vitv2_s"
+  },
+  "num_classes": 1000,
+  "opt": {
+    "layerwise_decay": 0.9,
+    "params": {
+      "lr": 0.002,
+      "weight_decay": 0.04
+    },
+    "patch_embed_lr_mult": 0.2,
+    "type": "AdamW"
+  },
+  "pl": {
+    "trainer": {
+      "accelerator": "gpu",
+      "accumulate_grad_batches": 1,
+      "benchmark": true,
+      "deterministic": false,
+      "devices": 4,
+      "gradient_clip_algorithm": "norm",
+      "gradient_clip_val": 3.0,
+      "max_epochs": 300,
+      "num_nodes": 2,
+      "num_sanity_val_steps": 0,
+      "precision": "bf16-mixed",
+      "strategy": "ddp",
+      "sync_batchnorm": false
+    }
+  },
+  "probe_every": null,
+  "run_id": null,
+  "run_name": "in-vit-s",
+  "scheduler": [
+    [
+      "lr",
+      "CatSched(LinSched(0.0, 2e-3), CosSched(2e-3, 1e-6), 10)"
+    ],
+    [
+      "weight_decay",
+      "ConstSched(5e-2)"
+    ]
+  ],
+  "trainer": "ms_lj"
+}
