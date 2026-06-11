@@ -1,4 +1,5 @@
 license: apache-2.0
+
 tags:
   - vision
   - image-feature-extraction
@@ -24,9 +25,7 @@ Rapid prototyping and training of vision foundation models, specifically designe
 
 ## ImageNet-1K Vision Transformer Collection
 
-A unified collection of Vision Transformer (ViT) models pre-trained exclusively on **ImageNet-1K** using three self-supervised methodologies: **LeJEPA**, **DINO
-**, and **iBOT
-**. All models share a single codebase, training strategy, and hardware configuration, making cross-method and cross-duration comparisons directly meaningful.
+A unified collection of Vision Transformer (ViT) models pre-trained exclusively on **ImageNet-1K** using three self-supervised methodologies: **LeJEPA**, **DINO**, and **iBOT**. All models share a single codebase, training strategy, and hardware configuration, making cross-method and cross-duration comparisons directly meaningful.
 
 ---
 
@@ -158,7 +157,7 @@ iBOT combines a masked image modelling objective in token space with a DINO-styl
 import torch
 from transformers import AutoModel, AutoImageProcessor
 
-model_id = "your-org/dino-vit-b16-ep300"
+model_id = "OK-AI/dino-vitb16-pretrain-in1k"
 
 processor = AutoImageProcessor.from_pretrained(model_id)
 model = AutoModel.from_pretrained(model_id, torch_dtype=torch.bfloat16)
@@ -188,8 +187,8 @@ patch_features = outputs.last_hidden_state[:, 1:, :]    # (1, num_patches, hidde
 
 ```python
 model = AutoModel.from_pretrained(
-    "your-org/dino-vit-b16-ep300",
-    subfolder="checkpoints/ep100",
+    "OK-AI/dino-vitb16-pretrain-in1k",
+    subfolder="checkpoints/ep300/epoch=199",
     torch_dtype=torch.bfloat16,
 )
 ```
