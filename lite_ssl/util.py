@@ -2,8 +2,9 @@ from importlib import import_module
 
 MODEL_TYPE: str = "model"
 DATA_TYPE: str = "data"
+AUG_TYPE: str = "auf"
 
-STORE_TYPES = [MODEL_TYPE, DATA_TYPE]
+STORE_TYPES = [MODEL_TYPE, DATA_TYPE, AUG_TYPE]
 
 
 class InstanceRegistry:
@@ -77,7 +78,7 @@ class RegistryStore:
 STORE = RegistryStore()
 
 ## import all the modules in the store types such that they are registered
-pkg = "ml"
+pkg = "lite_ssl"
 for name in STORE_TYPES:
     mod = import_module(f".{name}", package=pkg)
 
