@@ -129,12 +129,12 @@ iBOT combines a masked image modelling objective in token space with a DINO-styl
 │   │   ├── vit_s16_ep300.json
 │   │   ├── vit_b16_ep100.json
 │   │   └── vit_b16_ep300.json
-│   ├── dino_koleo/
+│   ├── dino/
 │   │   ├── vit_s16_ep100.json
 │   │   ├── vit_s16_ep300.json
 │   │   ├── vit_b16_ep100.json
 │   │   └── vit_b16_ep300.json
-│   └── ibot_koleo/
+│   └── ibot/
 │       ├── vit_s16_ep100.json
 │       ├── vit_s16_ep300.json
 │       ├── vit_b16_ep100.json
