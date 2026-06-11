@@ -78,5 +78,5 @@
       "ConstSched(5e-2)"
     ]
   ],
-  "trainer": "ms_lj"
+  "trainer": "lj_ms"
 }
