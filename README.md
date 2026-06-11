@@ -1,24 +1,3 @@
-license: apache-2.0
-
-tags:
-  - vision
-  - image-feature-extraction
-  - self-supervised-learning
-  - vit
-  - imagenet1k
-  - DiNO
-  - iBOT
-  - LeJEPA
-
-datasets:
-  - imagenet-1k
-
-library_name: pytorch
-
-pipeline_tag: image-feature-extraction
-
----
-
 # Lite SSL
 
 Rapid prototyping and training of vision foundation models, specifically designed for researchers with benchmarking and logging in mind.
