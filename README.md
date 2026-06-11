@@ -235,6 +235,14 @@ patches = outputs["patch_latent"]   # (1, 196, 384)
 ## Citation
 
 ```bibtex
+@article{Sablayrolles2018Jun,
+	author = {Sablayrolles, Alexandre and Douze, Matthijs and Schmid, Cordelia and J{\ifmmode\acute{e}\else\'{e}\fi}gou, Herv{\ifmmode\acute{e}\else\'{e}\fi}},
+	title = {{Spreading vectors for similarity search}},
+	year = {2018},
+	month = jun,
+	doi = {10.48550/arXiv.1806.03198}
+}
+
 @article{Caron2021Apr,
 	author = {Caron, Mathilde and Touvron, Hugo and Misra, Ishan and J{\ifmmode\acute{e}\else\'{e}\fi}gou, Herv{\ifmmode\acute{e}\else\'{e}\fi} and Mairal, Julien and Bojanowski, Piotr and Joulin, Armand},
 	title = {{Emerging Properties in Self-Supervised Vision Transformers}},
