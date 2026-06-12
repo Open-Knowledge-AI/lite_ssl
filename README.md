@@ -24,7 +24,6 @@ Models are named by methodology, architecture, and pretraining data:
 We first test model scale effects, small to large, to detemrine if new methods scale with size.
 Similarly, every model has two checkpoint variants, 100 and 300 epochs to determine how well methods scale with training duration.
 We plan to expand this analysis with also data scale, but currently only supply model checkpoints for in1k pretrained models.
-Intermediate checkpoints saved every 10 epochs are available under `checkpoints/ep{NNN}/` within each model repository. See [`docs/checkpoints.md`](docs/checkpoints.md) for details.
 
 > **No registers.** All models follow the ViT-v2 (DINOv2-style) architecture **without** register tokens.
 
@@ -200,20 +199,27 @@ import requests
 import torch
 
 from PIL import Image
+
 from transformers import AutoModel, AutoImageProcessor
 
-model_id = "OK-AI/dino-vits16-pretrain-in1k"
-
-processor = AutoImageProcessor.from_pretrained(model_id)
-model = AutoModel.from_pretrained(model_id, torch_dtype=torch.bfloat16)
-model.eval()
+processor = AutoImageProcessor.from_pretrained("OK-AI/dino-vits16-pretrain-in1k")
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
+pil_input = Image.open(requests.get(url, stream=True).raw)
 
-inputs = processor(images=image, return_tensors="pt")
-with torch.no_grad():
-    outputs = model(**inputs)
+preprocessed = processor(pil_input, return_tensors="pt")
+
+model_input = preprocessed.data["pixel_values"]
+print(f"Preprocessed Input Shape: {model_input.shape}")
+
+model = AutoModel.from_pretrained(
+    "OK-AI/dino-vits16-pretrain-in1k",
+    # revision="ep100/teacher",
+    trust_remote_code=True,
+)
+outputs = model(model_input)
+print(f"Output Keys: {outputs.keys()}")
+print(f"{outputs["latent"].shape=}, {outputs["patch_latent"].shape=}")
 
 # {
 #     "latent": cls_tokens[:, 0],
@@ -229,6 +235,31 @@ cls = outputs["latent"]        # (1, 384)
 # Patch tokens — use for dense tasks (depth, segmentation)
 patches = outputs["patch_latent"]   # (1, 196, 384)
 ```
+
+---
+
+## HuggingFace Spaces
+
+### ViT Patch PCA Visualisation
+
+Explore and compare patch-token representations learned by our self-supervised Vision Transformers:
+
+🔗 **Space:** https://huggingface.co/spaces/OK-AI/ViT-Patch-PCA-Visualisation
+
+This interactive demo projects ViT patch embeddings into a low-dimensional PCA space, allowing qualitative inspection of how different self-supervised objectives organise visual information. The Space supports models trained with:
+
+- **DINO**
+- **iBOT**
+- **LeJEPA**
+
+### Features
+
+- Upload your own images for analysis.
+- Visualise patch-token embeddings using PCA.
+- Compare representation structure across methods, model sizes, and training durations.
+- Inspect spatial organisation of learned features without task-specific supervision.
+
+The Space is intended as a lightweight representation-analysis tool for understanding how self-supervised ViTs encode image content beyond standard downstream benchmarks.
 
 ---
 
