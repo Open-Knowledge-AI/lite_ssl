@@ -39,3 +39,9 @@ class KoLeoLoss(nn.Module):
             distances = self.pdist(student_output, student_output[indices])  # BxD, BxD -> B
             loss = -torch.log(distances + eps).mean()
         return loss
+
+
+if __name__ == "__main__":
+    bleh = torch.randn(8, 128)
+    _kl = KoLeoLoss()
+    _loss = _kl(bleh)

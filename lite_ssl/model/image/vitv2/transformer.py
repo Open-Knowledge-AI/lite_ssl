@@ -78,7 +78,6 @@ class ViTv2(nn.Module):
         interpolate_antialias=False,
         interpolate_offset=0.1,
         num_classes=None,
-        **ignored_kwargs,
     ):
         """
         Args:
@@ -106,10 +105,6 @@ class ViTv2(nn.Module):
             interpolate_offset: (float) work-around offset to apply when interpolating positional embeddings
         """
         super().__init__()
-        if len(ignored_kwargs) > 0:
-            logger.warning(f"Ignored kwargs: {ignored_kwargs}")
-        del ignored_kwargs
-
         norm_layer = partial(nn.LayerNorm, eps=1e-6)
         self.img_size = img_size
 

@@ -142,3 +142,9 @@ class SIGReg(nn.Module):
         loss = stat_per_slice.mean() * num_samples_global
 
         return loss
+
+
+if __name__ == "__main__":
+    _sig_reg = SIGReg()
+
+    print(_sig_reg(torch.randn(128, 16), 0))

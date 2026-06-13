@@ -9,7 +9,7 @@ from loguru import logger
 from lightning.pytorch.callbacks import Callback
 from lightning.pytorch.callbacks import ModelCheckpoint
 
-from lite_ssl.config import WANDB_ENTITY, WANDB_PROJECT, SAVE_FAIL_POLICY
+from lite_ssl.config import WANDB_ENTITY, WANDB_PROJECT
 
 
 class SaveWeightsEveryEpochCallback(Callback):
@@ -26,11 +26,15 @@ class SaveWeightsEveryEpochCallback(Callback):
             self.save_dir.mkdir(parents=True, exist_ok=True)
             save_path = self.save_dir / self.filename
             torch.save(pl_module.state_dict(), save_path)
-        except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
+        except Exception:
+            try:
+                fallback_path = Path(
+                    f"/home/vaishp/ConKV/models/ConKV/{self.save_dir.name}/{self.filename}"
+                )
+                fallback_path.parent.mkdir(parents=True, exist_ok=True)
+                torch.save(pl_module.state_dict(), fallback_path)
+            except Exception:
                 pass
-            else:
-                raise e
 
     def on_fit_end(self, trainer, pl_module):
         if not trainer.is_global_zero or self.save_dir is None:
@@ -40,11 +44,15 @@ class SaveWeightsEveryEpochCallback(Callback):
             self.save_dir.mkdir(parents=True, exist_ok=True)
             save_path = self.save_dir / self.filename
             torch.save(pl_module.state_dict(), save_path)
-        except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
+        except Exception:
+            try:
+                fallback_path = Path(
+                    f"/home/vaishp/ConKV/models/ConKV/{self.save_dir.name}/{self.filename}"
+                )
+                fallback_path.parent.mkdir(parents=True, exist_ok=True)
+                torch.save(pl_module.state_dict(), fallback_path)
+            except Exception:
                 pass
-            else:
-                raise e
 
 
 class SaveWeightsEveryNEpochCallback(Callback):
@@ -65,11 +73,15 @@ class SaveWeightsEveryNEpochCallback(Callback):
             self.save_dir.mkdir(parents=True, exist_ok=True)
             save_path = self.save_dir / f"{self.filename}-{trainer.current_epoch}.pt"
             torch.save(pl_module.state_dict(), save_path)
-        except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
+        except Exception:
+            try:
+                fallback_path = Path(
+                    f"/home/vaishp/ConKV/models/ConKV/{self.save_dir.name}/{self.filename}-{trainer.current_epoch}.pt"
+                )
+                fallback_path.parent.mkdir(parents=True, exist_ok=True)
+                torch.save(pl_module.state_dict(), fallback_path)
+            except Exception:
                 pass
-            else:
-                raise e
 
     def on_fit_end(self, trainer, pl_module):
         if not trainer.is_global_zero or self.save_dir is None:
@@ -79,11 +91,15 @@ class SaveWeightsEveryNEpochCallback(Callback):
             self.save_dir.mkdir(parents=True, exist_ok=True)
             save_path = self.save_dir / f"last.ckpt"
             torch.save(pl_module.state_dict(), save_path)
-        except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
+        except Exception:
+            try:
+                fallback_path = Path(
+                    f"/home/vaishp/ConKV/models/ConKV/{self.save_dir.name}/last.ckpt"
+                )
+                fallback_path.parent.mkdir(parents=True, exist_ok=True)
+                torch.save(pl_module.state_dict(), fallback_path)
+            except Exception:
                 pass
-            else:
-                raise e
 
 
 class MyModelCheckpoint(ModelCheckpoint):
@@ -124,10 +140,7 @@ class MyModelCheckpoint(ModelCheckpoint):
                 logger.info(f"Checkpoint saved to {filepath} but WandB is not active.")
 
         except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
-                logger.error(f"Failed to save checkpoint to {filepath}: {e}")
-            else:
-                raise e
+            logger.error(f"Failed to save checkpoint to {filepath}: {e}")
 
     def rename_keys(self, filepath: str):
         state_dict = torch.load(filepath, map_location=torch.device("cpu"), weights_only=True)
@@ -138,10 +151,7 @@ class MyModelCheckpoint(ModelCheckpoint):
             torch.save(state_dict, filepath)
             logger.info(f"Removed 'model.' prefix from state dict keys in {filepath}.")
         except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
-                logger.error(f"Failed to save checkpoint to {filepath}: {e}")
-            else:
-                raise e
+            logger.error(f"Failed to save the modified state dict back to {filepath}: {e}")
 
     def get_checkpoint_from_wandb(self, run_id: str):
         """
@@ -209,7 +219,4 @@ class TeacherCheckpoint(MyModelCheckpoint):
             torch.save(state_dict, filepath)
             logger.info(f"Removed '{self.prefix}.' prefix from state dict keys in {filepath}.")
         except Exception as e:
-            if SAVE_FAIL_POLICY == "continue":
-                logger.error(f"Failed to save checkpoint to {filepath}: {e}")
-            else:
-                raise e
+            logger.error(f"Failed to save the modified state dict back to {filepath}: {e}")

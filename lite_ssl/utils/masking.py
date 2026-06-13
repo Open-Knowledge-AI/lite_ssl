@@ -18,7 +18,7 @@ def complete_mask_randomly_np(mask, num_masking_patches, rng):
     return mask
 
 
-class IBotMasker:
+class SeedletMaskingGeneratorCPU:
     def __init__(
         self,
         input_size,

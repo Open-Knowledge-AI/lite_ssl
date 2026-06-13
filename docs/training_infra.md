@@ -8,24 +8,24 @@ This document describes the hardware setup, software environment, and decisions 
 
 All models were trained on a single node with 8 GPUs. The global batch size of 1024 was achieved with 128 samples per GPU — no gradient accumulation was used.
 
-| Component | Specification            |
-|---|--------------------------|
-| GPUs | 8× (single node)         |
-| Per-GPU batch size | 128                      |
-| Global batch size | 1024                     |
+| Component               | Specification            |
+|-------------------------|--------------------------|
+| GPUs                    | 8× (single node)         |
+| Per-GPU batch size      | 128                      |
+| Global batch size       | 1024                     |
 | Inter-GPU communication | NCCL                     |
-| Precision | FP16-Mixed (PyTorch AMP) |
+| Precision               | BF16-Mixed (PyTorch AMP) |
 
 ---
 
 ## Software Environment
 
-| Package     | Role |
-|-------------|---|
-| PyTorch     | Core framework |
-| xFormers    | Memory-efficient attention (Flash Attention-style) |
-| torchvision | ImageNet-1K data loading and augmentation |
-| sbatch      | SLURM job scheduling |
+| Package      | Role                                               |
+|--------------|----------------------------------------------------|
+| PyTorch      | Core framework                                     |
+| xFormers     | Memory-efficient attention (Flash Attention-style) |
+| torchvision  | ImageNet-1K data loading and augmentation          |
+| sbatch       | SLURM job scheduling                               |
 
 ---
 
@@ -64,7 +64,7 @@ No square-root scaling is used.
 - Hardware topology (8 GPUs, single node)
 - Batch size (global and per-GPU)
 - Precision (BF16-mixed)
-- Architecture family (ViT-v2 without registers, without layer scale and without dropath)
+- Architecture family (ViT-v2 without registers)
 - Checkpoint cadence (every 10 epochs)
 
 **Not controlled (varies by method):**

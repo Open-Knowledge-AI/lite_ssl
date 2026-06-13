@@ -4,8 +4,8 @@ import sys
 
 from pathlib import Path
 
-from loguru import logger
 from dotenv import load_dotenv
+from loguru import logger
 
 # Load environment variables from .env file if it exists
 load_dotenv()
@@ -85,6 +85,7 @@ logger.info(f"CONFIGS_DIR path is: {CONFIGS_DIR}")
 RAW_DATA_DIR = Path(os.getenv("RAW_DATA_DIR", DATA_DIR / "raw"))
 INTERIM_DATA_DIR = Path(os.getenv("INTERIM_DATA_DIR", DATA_DIR / "interim"))
 PROCESSED_DATA_DIR = Path(os.getenv("PROCESSED_DATA_DIR", DATA_DIR / "processed"))
+OPEN_OOD_DATA_DIR = Path(os.getenv("OPEN_OOD_DATA_DIR", DATA_DIR / "OpenOOD"))
 IN_TRAIN_DIR = Path(os.getenv("IN_TRAIN_DIR", PROCESSED_DATA_DIR))
 IN_VAL_DIR = Path(os.getenv("IN_VAL_DIR", PROCESSED_DATA_DIR))
 
@@ -114,12 +115,11 @@ if WANDB_PROJECT is None:
 else:
     logger.info(f"WANDB_PROJECT is: {WANDB_PROJECT}")
 
-if os.getenv("WANDB_MODE", "disabled") == "disabled":
+if os.getenv("WANDB_MODE") == "disabled":
     logger.info("WANDB_MODE is disabled. Disabling WandB logging.")
     # set WANDB_SILENT to true to disable logging
     os.environ["WANDB_SILENT"] = "true"
     logger.info("WandB is made silent.")
 
-SAVE_FAIL_POLICY = os.getenv("SAVE_FAIL_POLICY", "crash")
 
 NUM_WORKERS = int(os.getenv("NUM_WORKERS", 2))

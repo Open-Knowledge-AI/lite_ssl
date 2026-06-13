@@ -1,10 +1,10 @@
 from importlib import import_module
 
 MODEL_TYPE: str = "model"
+AUG_TYPE: str = "aug"
 DATA_TYPE: str = "data"
-AUG_TYPE: str = "auf"
 
-STORE_TYPES = [MODEL_TYPE, DATA_TYPE, AUG_TYPE]
+STORE_TYPES = [MODEL_TYPE, AUG_TYPE, DATA_TYPE]
 
 
 class InstanceRegistry:

@@ -55,6 +55,12 @@ class DINOHead(nn.Module):
             return x
 
 
+class IdentityHead(nn.Module):
+
+    def forward(self, x, **kwargs):
+        return x
+
+
 def _build_mlp(nlayers, in_dim, bottleneck_dim, hidden_dim=None, use_bn=False, bias=True):
     if nlayers == 1:
         return nn.Linear(in_dim, bottleneck_dim, bias=not use_bn)

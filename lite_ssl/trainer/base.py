@@ -5,16 +5,15 @@ import lightning as pl
 import torchmetrics
 
 from loguru import logger
-from tqdm.auto import tqdm
 from lightning import Callback
 from ml_collections import ConfigDict
 
 from lite_ssl.loss import get_loss
-from lite_ssl.config import MODELS_DIR
 from lite_ssl.metric import get_metric
+from lite_ssl.config import MODELS_DIR
+from lite_ssl.util import STORE, MODEL_TYPE
 from lite_ssl.optim import init_optims_from_config
 from lite_ssl.scheduling import Schedule, Scheduler
-from lite_ssl.util import STORE, MODEL_TYPE, MIX_TYPE, AUG_TYPE
 
 
 def apply_lr_multiplier(loc, step, sched):
@@ -23,6 +22,21 @@ def apply_lr_multiplier(loc, step, sched):
 
 def apply_wd_multiplier(loc, step, sched):
     return loc.get("wd_multiplier", 1.0) * sched(step)
+
+
+class OnlyImageAugmentationWrapper(torch.nn.Module):
+    """
+    Wrapper for the augmentation module to only apply the augmentation to the image.
+    """
+
+    def __init__(self, aug_module):
+        super().__init__()
+        self.aug_module = aug_module
+
+    def forward(self, *batch):
+        x, *y = batch
+        x = self.aug_module(x)
+        return x, *y
 
 
 class MyIdentity(torch.nn.Module):
@@ -69,10 +83,6 @@ class BaseTrainer(pl.LightningModule):
 
         metrics = self.make_metrics()
         metrics = torchmetrics.MetricCollection(metrics)
-
-        if hasattr(self.config, MIX_TYPE) and self.config.__getattr__(MIX_TYPE):
-            # replace train metrics with L2 metrics
-            self.train_metrics = torchmetrics.MetricCollection({}).clone(prefix="train/")
 
         if (
             self.config.dataset.name in ["in100", "in", "in21k"]

@@ -3,8 +3,8 @@ import torch.nn as nn
 
 
 from lite_ssl.config import logger
-from lite_ssl.model.image.vitv3.transformer import ViTv3
 from lite_ssl.layers import DINOHead, IdentityHead
+from lite_ssl.model.image.vitv3.transformer import ViTv3
 
 
 class ProjViTv3(ViTv3):
