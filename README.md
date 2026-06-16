@@ -1,5 +1,33 @@
 # Lite SSL
 
+<a target="_blank" href="https://doi.org/10.5281/zenodo.20723370">
+	<img src="https://zenodo.org/badge/1266150999.svg" alt="DOI">
+</a>
+
+<a target="_blank" href="https://python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white" />
+</a>
+
+<a target="_blank" href="https://pytorch.org/">
+    <img src="https://img.shields.io/badge/PyTorch-2.0-EE4C2C.svg?style=flat&logo=pytorch" />
+</a>
+
+<a target="_blank" href="https://wandb.ai/">
+    <img src="https://img.shields.io/badge/wandb-FFCC33.svg?style=flat&logo=WeightsAndBiases&logoColor=black" />
+</a>
+
+<a target="_blank" href="https://lightning.ai/">
+    <img src="https://img.shields.io/badge/-Lightning-792ee5?logo=lightning&logoColor=white" />
+</a>
+
+<a target="_blank" href="https://pre-commit.com/">
+    <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=yellow" />
+</a>
+
+<a target="_blank" href="https://black.readthedocs.io/en/stable/">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" />
+</a>
+
 Rapid prototyping and training of vision foundation models, specifically designed for researchers with benchmarking and logging in mind.
 
 ## ImageNet-1K Vision Transformer Collection
@@ -152,7 +180,7 @@ Metrics are only available for the teacher weights.
 | DINO ViT-S/16 ep100   | 69.32                      | -                          | -                  | -              | -                |
 | DINO ViT-S/16 ep300   | 73.88                      | -                          | -                  | -              | -                |
 | DINO ViT-B/16 ep100   | 73.49                      | -                          | -                  | -              | -                |
-| DINO ViT-B/16 ep300   | Soon                       | -                          | -                  | -              | -                |
+| DINO ViT-B/16 ep300   | 76.06                      | -                          | -                  | -              | -                |
 | iBOT ViT-S/16 ep100   | 69.70                      | -                          | -                  | -              | -                |
 | iBOT ViT-S/16 ep300   | 74.32                      | -                          | -                  | -              | -                |
 | iBOT ViT-B/16 ep100   | 76.50                      | -                          | -                  | -              | -                |
@@ -264,6 +292,24 @@ The Space is intended as a lightweight representation-analysis tool for understa
 ---
 
 ## Citation
+
+If this repository is helpful or if any of the weights are used from: https://huggingface.co/collections/OK-AI/imagenet-1k-self-supervised-vit-baselines, please cite the repository:
+```bibtex
+@misc{okaiLiteSSL,
+  title = {Open-Knowledge-{{AI}}/Lite SSL: V1.0.0},
+  shorttitle = {Open-Knowledge-{{AI}}/Lite SSL},
+  author = {Puru Vaish},
+  year = 2026,
+  month = jun,
+  doi = {10.5281/ZENODO.20723370},
+  url = {https://zenodo.org/doi/10.5281/zenodo.20723370},
+  urldate = {2026-06-16},
+  copyright = {Creative Commons Attribution 4.0 International},
+  howpublished = {Zenodo}
+}
+```
+
+Please also cite the corresponding method papers when they are used.
 
 ```bibtex
 @article{Sablayrolles2018Jun,
