@@ -190,7 +190,6 @@ Metrics are only available for the teacher weights.
 | LeJEPA ViT-B/16 ep100 | 69.28                      | -                          | -                  | -              | -                |
 | LeJEPA ViT-B/16 ep300 | 72.04                      | -                          | -                  | -              | -                |
 
-Grouped by method, DINO first since you have results for it. Let me know if you'd prefer a different ordering (e.g. by architecture, or alphabetical by method).
 > Online probe results are logged during pre-training. Linear probe, k-NN, and downstream evaluations are coming soon.
 
 ---
